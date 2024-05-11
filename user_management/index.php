@@ -1,50 +1,40 @@
 <?php
 require('components/header.php');
 $name = $age = $email = $password = $confirm_password = $gender = '';
-$name_error = $age_error = $email_error = $password_error = $confirm_password_error = $gender_error = '';
-if (isset($_POST['submit'])) {
-    if (empty($_POST['name'])) {
-        $name_error = 'Name is requied';
-    } else {
-        $name = htmlspecialchars($_POST['name']);
-    }
-    if (empty($_POST['age'])) {
-        $age_error = 'Age is requied';
-    } else {
-        $age = htmlspecialchars($_POST['age']);
-    }
-    if (empty($_POST['email'])) {
-        $email_error = 'Email is requied';
-    } else {
-        $email = htmlspecialchars($_POST['email']);
-    }
+$errors = [];
 
-    if (empty($_POST['password'])) {
-        $password_error = 'Password is requied';
-    } else {
-        $password = htmlspecialchars($_POST['password']);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = htmlspecialchars($_POST['name'] ?? '');
+    $age = htmlspecialchars($_POST['age'] ?? '');
+    $email = htmlspecialchars($_POST['email'] ?? '');
+    $password = htmlspecialchars($_POST['password'] ?? '');
+    $confirm_password = htmlspecialchars($_POST['confirm_password'] ?? '');
+    $gender = htmlspecialchars($_POST['gender'] ?? '');
+
+
+    if (empty($name)) {
+        $errors['name'] = 'Name is required';
     }
-    if (empty($_POST['confirm_password'])) {
-        $confirm_password_error = 'confirm_password is requied';
-    } else {
-        $confirm_password = htmlspecialchars($_POST['confirm_password']);
+    if (empty($age)) {
+        $errors['age'] = 'Age is required';
     }
-    if (empty($_POST['gender'])) {
-        $gender_error = 'Gender is requied';
-    } else {
-        $gender = htmlspecialchars($_POST['gender']);
+    if (empty($email)) {
+        $errors['email'] = 'Email is required';
+    }
+    if (empty($password)) {
+        $errors['password'] = 'Password is required';
+    }
+    if (empty($confirm_password)) {
+        $errors['confirm_password'] = 'Confirm password is required';
+    }
+    if (empty($gender)) {
+        $errors['gender'] = 'Gender is required';
     }
     if ($password != $confirm_password) {
-        $confirm_password_error = 'confirm_password invalid';
-    } else {
-        $password = htmlspecialchars($_POST['password']);
-        $confirm_password = htmlspecialchars($_POST['confirm_password']);
+        $errors['confirm_password'] = 'Passwords do not match';
     }
 
-
-    $validate_sucess = empty($name_error) && empty($email_error) && empty($body_error) && empty($password_error) && empty($gender_error) && ($password === $confirm_password);
-
-    if ($validate_sucess) {
+    if (empty($errors)) {
 
         $sql = "INSERT INTO user(name , age ,  email , password , gender ) VALUES(?,?,?,?,?)";
 
@@ -58,7 +48,7 @@ if (isset($_POST['submit'])) {
             $statement->execute();
             echo '<h2>inserted sucess</h2>';
             // echo '<h3>List of student</h3>';
-            echo '<h3><a href=/user_management/user_list.php>List of student</a></h2>';
+            echo '<h3><a href=/user_management/list_user.php>List of student</a></h2>';
             // header('location: user_list.php');
         } catch (PDOException $e) {
             echo 'cannot insert' . $e->getMessage();
@@ -73,68 +63,50 @@ if (isset($_POST['submit'])) {
 
 ?>
 <h1>USER MANAGEMENT</h1>
-<form action="<?php
-                echo htmlspecialchars($_SERVER['PHP_SELF']);
-                ?>" method="post">
+<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
     <div class="mb-3">
-        <input type="text" class="form-control <?php echo $name_error ? 'is-invalid' : ''; ?>" name="name" placeholder="What is your name ?">
-        <p class="text-danger">
-            <?php echo $name_error; ?>
-        </p>
-
+        <input type="text" class="form-control <?= isset($errors['name']) ? 'is-invalid' : ''; ?>" name="name" placeholder="What is your name?" value="<?= $name ?>">
+        <div class="invalid-feedback">
+            <?= $errors['name'] ?? '' ?>
+        </div>
     </div>
-
     <div class="mb-3">
-        <input type="number" class="form-control <?php echo $age_error ? 'is-invalid' : ''; ?>" name="age" placeholder="How old are you ?">
-        <p class="text-danger">
-            <?php echo $age_error; ?>
-        </p>
-
+        <input type="number" class="form-control <?= isset($errors['age']) ? 'is-invalid' : ''; ?>" name="age" placeholder="How old are you?" value="<?= $age ?>">
+        <div class="invalid-feedback">
+            <?= $errors['age'] ?? '' ?>
+        </div>
     </div>
-
     <div class="mb-3">
-        <input type="email" class="form-control <?php echo $email_error ? 'is-invalid' : ''; ?>" name="email" placeholder="Enter your email">
-        <p class="text-danger">
-            <?php echo $email_error; ?>
-        </p>
+        <input type="email" class="form-control <?= isset($errors['email']) ? 'is-invalid' : ''; ?>" name="email" placeholder="Enter your email" value="<?= $email ?>">
+        <div class="invalid-feedback">
+            <?= $errors['email'] ?? '' ?>
+        </div>
     </div>
-
     <div class="mb-3">
-        <input type="password" class="form-control <?php echo $password_error ? 'is-invalid' : ''; ?>" name="password" placeholder="Enter your password">
-        <p class="text-danger">
-            <?php echo $password_error; ?>
-        </p>
+        <input type="password" class="form-control <?= isset($errors['password']) ? 'is-invalid' : ''; ?>" name="password" placeholder="Enter your password" value="<?= $password ?>">
+        <div class="invalid-feedback">
+            <?= $errors['password'] ?? '' ?>
+        </div>
     </div>
-
     <div class="mb-3">
-        <input type="password" class="form-control <?php echo $confirm_password_error ? 'is-invalid' : ''; ?>" name="confirm_password" placeholder="Enter your confirm password">
-        <p class="text-danger">
-            <?php echo $confirm_password_error;; ?>
-        </p>
+        <input type="password" class="form-control <?= isset($errors['confirm_password']) ? 'is-invalid' : ''; ?>" name="confirm_password" placeholder="Confirm your password" value="<?= $confirm_password ?>">
+        <div class="invalid-feedback">
+            <?= $errors['confirm_password'] ?? '' ?>
+        </div>
     </div>
-
     <div class="mb-3">
         <label>Gender</label>
-        <input type="radio" name="gender" value="Male"> Male
-        <input type="radio" name="gender" value="Female"> Female
-
-        <p class="text-danger">
-            <?php echo $gender_error; ?>
-        </p>
-
-
-
+        <div>
+            <input type="radio" name="gender" value="Male" <?= $gender == 'Male' ? 'checked' : '' ?>> Male
+            <input type="radio" name="gender" value="Female" <?= $gender == 'Female' ? 'checked' : '' ?>> Female
+        </div>
+        <div class="invalid-feedback">
+            <?= $errors['gender'] ?? '' ?>
+        </div>
     </div>
-
-
-
-
-
-
     <div class="mb-3">
         <input type="submit" class="btn btn-primary" name="submit" value="Send">
     </div>
-
 </form>
 <?php
 include 'components/footer.php';
