@@ -14,6 +14,7 @@
 
 
     $id = $_GET['sid'] ?? '';
+    
 
     if ($id != '') {
         $sql = "SELECT * FROM user WHERE id=:id";

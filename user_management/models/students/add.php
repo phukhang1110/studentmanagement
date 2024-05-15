@@ -6,6 +6,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Lấy dữ liệu từ form và làm sạch chúng
     $name = htmlspecialchars($_POST["name"]);
     $department_id = intval($_POST["department_id"]); // Chuyển đổi thành số nguyên
+    $age = htmlspecialchars($_POST["age"]);
+    $email = htmlspecialchars($_POST["email"]);
 
     // Kết nối đến cơ sở dữ liệu MySQL
     $mysqli = new mysqli("localhost", "root", "", "student_managements");
@@ -16,9 +18,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Thêm sinh viên mới
-    $new_student_id = Student::addStudent($mysqli, $name, $department_id);
+    $new_student_id = Student::addStudent($mysqli, $name, $department_id, $age, $email);
 
-    // Kiểm tra xem sinh viên đã được thêm thành công chưa
+    // Kiểm tra xem sinh viên đã được sửa thành công chưa
     if ($new_student_id) {
         echo "Sinh viên đã được thêm vào với ID: " . $new_student_id;
     } else {

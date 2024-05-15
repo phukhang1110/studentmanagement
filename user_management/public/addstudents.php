@@ -58,11 +58,21 @@
             <label for="name">Tên Sinh viên:</label>
             <input type="text" id="name" name="name" required>
 
-            <label for="department">Phòng Ban:</label>
+            <label for="department">Khoa:</label>
             <select id="department" name="department_id" required>
-                <option value="1">Phòng A</option>
-                <option value="2">Phòng B</option>
+                <option value="1">TKTH</option>
+                <option value="2">Marketing</option>
             </select>
+
+            <div>
+            <label for="age">Tuổi:</label>
+            <input type="number" id="age" name="age" required>
+            </div>
+
+            <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            </div>
 
             <input type="submit" value="Thêm mới">
         </form>

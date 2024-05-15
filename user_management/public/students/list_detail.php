@@ -1,5 +1,8 @@
 <?php
 include('../../functions/Student.php');
+
+$student_id = $_GET['sid'] ?? '';
+// var_dump($student_id);
 // Kết nối đến cơ sở dữ liệu
 $mysqli = new mysqli("localhost", "root", "", "student_managements");
 
@@ -9,7 +12,8 @@ if ($mysqli->connect_error) {
 }
 
 // Gọi phương thức để lấy danh sách sinh viên từ class Student
-$students = Student::getStudents($mysqli);
+$students = Student::getDetailStudents($mysqli, $student_id);
+
 
 // Hiển thị dữ liệu trong bảng HTML
 ?>
@@ -63,9 +67,7 @@ $students = Student::getStudents($mysqli);
                     <th>Khoa</th>
                     <th>Tuôi</th>
                     <th>Email</th>
-                    <th>Xem thông tin chi tiết</th>
-                    <th>Thao tác</th>
-
+                    
                 </tr>
             </thead>
             <tbody>
@@ -76,9 +78,7 @@ $students = Student::getStudents($mysqli);
                     <td><?php echo $student->getDepartment(); ?></td>
                     <td><?php echo $student->getAge(); ?></td>
                     <td><?php echo $student->getEmail(); ?></td>
-                    <td><a href="/user_management/public/students/list_detail.php?sid=<?= $student->getID();?>">Sinh viên <?= $student->getId(); ?></a></td>
-                    <td><a onclick="return confirm ('bạn có muốn xóa sinh viên này không?');" href="/user_management/models/students/delete.php?sid=<?= $student->getID();?>">Xoá</a> 
-                    <a href='/user_management/public/updatestudents.php?sid=<?= $student->getID();?>'>Sửa</a></td>
+                    
                     
                    
                     
